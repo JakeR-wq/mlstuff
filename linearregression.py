@@ -5,42 +5,39 @@ import numpy as np
 
 df = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/refs/heads/master/iris.csv")
 
-species = {'setosa':'red', 'versicolor':'blue', 'virginica':'green'}
-#plt.scatter(df['petal_width'], df['petal_length'], c=df['species'].map(species))
+df = df.loc[df['species'] == "virginica"]
 
-
-df['squared_petal_width'] = df['petal_width']**2
-df['squared_petal_length'] = df['petal_length']**2
-
-squared_petal_width = np.asarray(df['squared_petal_width'])
-squared_petal_length = np.asarray(df['squared_petal_length'])
-
-print(df)
-
-#plt.show()
-
-
-n = len(df)
-
-petal_width = np.asarray(df['petal_width'])
+sepal_length = np.asarray(df['sepal_length'])
 petal_length = np.asarray(df['petal_length'])
 
+# find sample variance for one variable
+def sample_var(x):
+    xbar = np.sum(x) / len(x)
+    return (np.sum(np.square(x - xbar))) / (len(x) - 1)
 
-#find sample width mean
-xbar = np.sum(petal_width) / n
+# find pearson correlation coefficient between two variables
+def corr_coeff(x, y):
+    xbar = np.sum(x) / len(x)
+    ybar = np.sum(y) / len(x)  
+    return (np.sum(x * y) - (len(x) * xbar * ybar)) / ((np.sqrt(np.sum(np.square(x)) - (len(x) * np.square(xbar)))) * (np.sqrt(np.sum(np.square(y)) - (len(x) * np.square(ybar)))))
 
-# sample length mean 
-ybar = np.sum(petal_length) / n
+# find m and b for the regression line, returns m and b as a list
+def regr_line(x, y):
+    m = corr_coeff(x,y) * (sample_var(y) / sample_var(x))
+    b = (np.sum(y) / len(y)) - (m * (np.sum(x) / len(x)))
+    return [m, b]
 
-print(xbar, ybar)
-print(n)
-print(n * (np.sum(squared_petal_width) - np.square(np.sum(petal_width))))
-print(n * (np.sum(squared_petal_length) - np.square(np.sum(petal_length))))
-print(n * np.sum(petal_length * petal_width) - (np.sum(petal_width) * np.sum(petal_length)))
+# plot the data along with the regression line
+def graph(x, y):
+    regression_line = regr_line(x,y)
+    xs = np.linspace(np.min(x), np.max(x), 100)
+    ys = (regression_line[0] * xs) + regression_line[1] # y = mx + b
+    plt.plot(xs, ys)
+    plt.scatter(x, y)
+    plt.show()
+    return
 
-# sample correlation coefficient
-corr_coeff = (np.sum(petal_width * petal_length) - (n * xbar * ybar)) / ((np.sqrt(np.sum(squared_petal_width)) - n * np.square(xbar)) * (np.sqrt(np.sum(squared_petal_length)) - n * np.square(ybar)))
-print(corr_coeff)
+graph(sepal_length, petal_length)
 
 
 
