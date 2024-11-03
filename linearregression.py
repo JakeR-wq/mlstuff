@@ -1,19 +1,23 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
+import pandas as pd # type: ignore
+import matplotlib.pyplot as plt # type: ignore
+import numpy as np # type: ignore
 
 
-df = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/refs/heads/master/iris.csv")
+# df = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/refs/heads/master/iris.csv")
 
-df = df.loc[df['species'] == "virginica"]
+# df = df.loc[df['species'] == "virginica"]
 
-sepal_length = np.asarray(df['sepal_length'])
-petal_length = np.asarray(df['petal_length'])
+# sepal_length = np.asarray(df['sepal_length'])
+# petal_length = np.asarray(df['petal_length'])
 
 # find sample variance for one variable
 def sample_var(x):
     xbar = np.sum(x) / len(x)
     return (np.sum(np.square(x - xbar))) / (len(x) - 1)
+
+def std_dev(x):
+    xbar = np.sum(x) / len(x)
+    return (np.sum(np.square(x - xbar))) / (len(x))
 
 # find pearson correlation coefficient between two variables
 def corr_coeff(x, y):
@@ -37,7 +41,16 @@ def graph(x, y):
     plt.show()
     return
 
-graph(sepal_length, petal_length)
+def mean(x):
+    return sum(x) / len(x)
+
+def cost_function(X, y, weights, bias):
+    n = len(y)
+    predictions = X.dot(weights) + bias
+    cost = (1 / n) * np.sum((predictions - y) ** 2)
+    return cost
+
+# graph(sepal_length, petal_length)
 
 
 

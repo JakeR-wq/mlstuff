@@ -1,2 +1,4 @@
-# mlstuff
-learning some ml
+# MLStuff
+studying gradient descent
+
+
